@@ -8,7 +8,6 @@ import CustomButton from '../Button';
 import CustomizedSnackbar from '../Snackbar';
 import * as controller from '../../user/contorller'
 import { useHistory } from 'react-router-dom';
-
 // all the css for the login page
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,38 +45,37 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const HTTP_STATUS_SUCCESs = 200
+
 export default function LoginPaper() {
     const classes = useStyles();
-    const [username, setUsername] = useState()
+    const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [snackbarText, setSnackbarText] = useState()
     const [snackbarType, setSnackbarType] = useState()
     const [open, setOpen] = useState(false)
 
-    const history = useHistory();
-
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        if (username && password) {
-            const retrievedUser = await controller.getUserByUsername(username)
-            if (username === retrievedUser.username) {
-                history.push({
-                    pathname: "/",
-                    state: {
-                        response: retrievedUser
-                    }
-                });
+        if (email && password) {
+            var response = await controller.postLogin({email: email, password: password})
+            const code = response.code
+            console.log(response)
+            if (code === HTTP_STATUS_SUCCESs) {
+                setOpen(true)
+                setSnackbarType("success")
+                setSnackbarText("Succesfully logged in!")
             } else {
                 setOpen(true)
                 setSnackbarType("error")
-                setSnackbarText("Wrong username or password!")
+                setSnackbarText("Wrong email or password!")
             }
         } else {
-            if (username === undefined) {
+            if (email === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
-                setSnackbarText("Plaease provide a username!")
+                setSnackbarText("Plaease provide a email!")
             } else if (password === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
@@ -94,8 +92,8 @@ export default function LoginPaper() {
         setPassword(value)
     }
 
-    const handleUsernameChange = (value) => {
-        setUsername(value)
+    const handleEmailChange = (value) => {
+        setEmail(value)
     }
 
     return (
@@ -113,8 +111,8 @@ export default function LoginPaper() {
                         </Typography>
                     </Grid>
                     <form className={classes.form} noValidate autoComplete="off" onSubmit={handleSubmit}>
-                        <CustomTextField placeholder="Username"
-                            saveValue={handleUsernameChange} />
+                        <CustomTextField placeholder="Email"
+                            saveValue={handleEmailChange} />
                         <CustomTextField type="password"
                             placeholder="Password"
                             saveValue={handlePasswordChange} />

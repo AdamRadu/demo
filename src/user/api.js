@@ -1,8 +1,16 @@
 const axios = require("axios")
-const port= 3001
+const port= 8080
 
-export const getUserByUsername = async (username) =>
+export const postLogin = async (data) =>
 {
-    const response = await axios.get(`http://localhost:${port}/users${username}`)
-    return response.data
+    const response = await axios.post(`http://localhost:${port}/users/login`, data, {crossDomain: true})
+
+    return response
+}
+
+export const refreshTokens = async (data) =>
+{
+    const response = await axios.post(`http://localhost:${port}/users/refreshTokens`, data, {crossDomain: true})
+
+    return response
 }

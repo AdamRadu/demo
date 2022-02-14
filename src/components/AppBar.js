@@ -42,7 +42,7 @@ export default function CustomAppBar(props) {
 
     const displayLogin = (user, location) => {
         if (user) {
-            if (user.type === "admin") {
+            if (user !== undefined) {
                 return false
             }
         }
