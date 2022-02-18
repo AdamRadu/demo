@@ -1,6 +1,6 @@
 const axios = require("axios")
-const port= 8080
-
+const loginPort= 8080
+const port = 8081
 export const postLogin = async (data) =>
 {
     const response = await axios.post(`http://localhost:${port}/users/login`, data, {crossDomain: true})

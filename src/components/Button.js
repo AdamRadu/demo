@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
+    root:{paddingBottom:"20px"},
     button: {
         backgroundColor: "#3C9BD8",
         marginTop: "50px",
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CustomButton(props) {
     const classes = useStyles();
+    console.log(classes)
 
     return (
         <div className={classes.root}>
