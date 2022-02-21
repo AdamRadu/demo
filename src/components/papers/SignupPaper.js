@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const HTTP_STATUS_CCREATED_SUCCESS = 201
+const HTTP_STATUS_CREATED_SUCCESS = 201
 
 export default function SignupPaper() {
     const history = useHistory()
@@ -67,7 +67,7 @@ export default function SignupPaper() {
             if(password === confirmationPassword){
                 var response = await controller.signupUser({username: username, password: password, confirmationPassword: confirmationPassword})
                 const code = response.code
-                if (code === HTTP_STATUS_CCREATED_SUCCESS) {
+                if (code === HTTP_STATUS_CREATED_SUCCESS) {
                     setOpen(true)
                     setSnackbarType("success")
                     setSnackbarText("Succesfully signed up!")
