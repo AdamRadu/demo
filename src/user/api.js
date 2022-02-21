@@ -40,3 +40,8 @@ export const refreshTokens = async (data) =>{
     return response
 }
 
+export const getUsers = async () =>{
+    const response = await axios.get(`http://localhost:${port}/users`)
+
+    return response
+}
