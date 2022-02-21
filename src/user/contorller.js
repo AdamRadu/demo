@@ -75,3 +75,15 @@ export const refreshTokens = async (data) =>{
 
     return resultWithCode
 }
+
+export const getUsers = async () =>{
+
+    const result = await api.getUsers()
+
+    const resultWithCode = {
+        data: result.data,
+        code: result.status
+    }
+
+    return resultWithCode
+}
