@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Alert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography';
 import CustomTextField from '../TextField';
 import CustomButton from '../Button';
 import CustomizedSnackbar from '../Snackbar';
 import * as controller from '../../user/contorller'
 import { useHistory } from 'react-router-dom';
-
-// all the css for the login page
+// all the css for the signup page
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -17,8 +17,10 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         borderRadius: "5px",
-        width: "300px",
-        height: "400px"
+        width: "400px",
+    },
+    text: {
+        marginTop: "10px"
     },
     title: {
         marginTop: "10px"
@@ -46,13 +48,14 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const HTTP_STATUS_SUCCESs = 200
+const HTTP_STATUS_CCREATED_SUCCESS = 201
 
-export default function LoginPaper() {
+export default function SignupPaper() {
     const history = useHistory()
     const classes = useStyles();
-    const [email, setEmail] = useState()
+    const [username, setusername] = useState()
     const [password, setPassword] = useState()
+    const [confirmationPassword, setConfirmationPassword] = useState()
     const [snackbarText, setSnackbarText] = useState()
     const [snackbarType, setSnackbarType] = useState()
     const [open, setOpen] = useState(false)
@@ -60,32 +63,33 @@ export default function LoginPaper() {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        if (email && password) {
-            var response = await controller.postLogin({email: email, password: password})
-            const code = response.code
-            console.log(response)
-            if (code === HTTP_STATUS_SUCCESs) {
-                setOpen(true)
-                setSnackbarType("success")
-                setSnackbarText("Succesfully logged in!")
-                setTimeout(function () {
-                    history.push({
-                        pathname:  "/home",
-                        state: {
-                            tokens: response.data
-                        } 
-                     });
-                }, 5000);
-            } else {
-                setOpen(true)
-                setSnackbarType("error")
-                setSnackbarText("Wrong email or password!")
+        if (username && password) {
+            if(password === confirmationPassword){
+                var response = await controller.signupUser({username: username, password: password, confirmationPassword: confirmationPassword})
+                const code = response.code
+                if (code === HTTP_STATUS_CCREATED_SUCCESS) {
+                    setOpen(true)
+                    setSnackbarType("success")
+                    setSnackbarText("Succesfully signed up!")
+                    setTimeout(function () {
+                        history.push({
+                            pathname:  "/login",
+                            state: {
+                                backLocation: "/signup"
+                            } 
+                         });
+                    }, 5000);
+                } else {
+                    setOpen(true)
+                    setSnackbarType("error")
+                    setSnackbarText("Wrong username or password!")
+                }
             }
         } else {
-            if (email === undefined) {
+            if (username === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
-                setSnackbarText("Plaease provide a email!")
+                setSnackbarText("Plaease provide a username!")
             } else if (password === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
@@ -102,8 +106,12 @@ export default function LoginPaper() {
         setPassword(value)
     }
 
-    const handleEmailChange = (value) => {
-        setEmail(value)
+    const handleConfirmationPasswordChange = (value) => {
+        setConfirmationPassword(value)
+    }
+
+    const handleUsernameChange = (value) => {
+        setusername(value)
     }
 
     return (
@@ -117,16 +125,20 @@ export default function LoginPaper() {
                         className={classes.titleBackground}>
                         <Typography className={classes.title}
                             variant="h5" >
-                            Login
+                            Register
                         </Typography>
                     </Grid>
                     <form className={classes.form} noValidate autoComplete="off" onSubmit={handleSubmit}>
                         <CustomTextField placeholder="Email"
-                            saveValue={handleEmailChange} />
+                            saveValue={handleUsernameChange} />
                         <CustomTextField type="password"
                             placeholder="Password"
                             saveValue={handlePasswordChange} />
-                        <CustomButton type="submit" text={"Login"} />
+                        <CustomTextField type="password"
+                            placeholder="Confirm Password"
+                            saveValue={handleConfirmationPasswordChange} />
+                        {password !== confirmationPassword ? <Alert severity="error" className={classes.text}>Passwords do not match!</Alert>:""}
+                        <CustomButton type="submit" text={"Register"} />
                     </form>
                 </Grid>
             </Paper>

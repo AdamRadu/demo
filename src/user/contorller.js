@@ -5,8 +5,6 @@ export const postLogin = async (data) =>{
     try {
         const result = await api.postLogin(data)
 
-        console.log(result)
-
         const resultWithCode = {
             data: result.data,
             code: result.status
@@ -17,6 +15,23 @@ export const postLogin = async (data) =>{
       catch (error) {
         return error
       }
+}
+
+export const signupUser = async (data) =>{
+    var result
+
+    if (data.username.includes("@")){
+        result = await api.postSignupWithEmail({email_address: data.username, password: data.password, confirm_password: data.confirmationPassword})
+    }else{
+        result = await api.postSignupWithUsername({username: data.username, password: data.password, confirm_password: data.confirmationPassword})
+    }
+
+    const resultWithCode = {
+        data: result.data,
+        code: result.status
+    }
+
+    return resultWithCode
 }
 
 export const refreshTokens = async (data) =>{

@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
+    root:{paddingBottom:"50px"},
     button: {
         backgroundColor: "#3C9BD8",
         marginTop: "50px",
