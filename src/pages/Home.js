@@ -2,19 +2,20 @@ import React, { useState } from 'react';
 import CustomAppBar from "../components/AppBar"
 import { useHistory } from "react-router-dom";
 import CustomButton from "../components/Button";
-import UpdateUserPaper from '../components/papers/UpdateUserPaper';
+import UpdateUserPaper from '../components/papers/UpdateUserPaper'
+import UpdatePasswordPaper from '../components/papers/UpdatePasswordPaper';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import jwt from 'jwt-decode'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-      display: 'flex',
-      flexWrap: 'wrap',
+    display: 'flex',
+    flexWrap: 'wrap',
   },
   paper: {
-      borderRadius: "5px",
-      width: "100%",
+    borderRadius: "5px",
+    width: "100%",
   },
 }));
 
@@ -23,6 +24,7 @@ export default function Home() {
   const classes = useStyles()
   const location = history.location.pathname
   const [openUpdateUser, setOpenUpdateUser] = useState(false)
+  const [openUpdatePassword, setOpenUpdatePassword] = useState(false)
   var user, tokens
 
   if (history.location.state) {
@@ -30,13 +32,17 @@ export default function Home() {
 
     const tokenToString = jwt(tokens.access_token);
     user = { id: tokenToString.user_id }
-  }else{
+  } else {
     tokens = undefined
     user = undefined
   }
 
   const handleRefreshClick = async () => {
     setOpenUpdateUser(!openUpdateUser)
+  }
+
+  const handleRefreshUpdatePasswordClick = async () => {
+    setOpenUpdatePassword(!openUpdatePassword)
   }
 
   return <div>
@@ -53,7 +59,20 @@ export default function Home() {
             onClick={handleRefreshClick} />
           : ""
       }
-      {openUpdateUser === true ? <UpdateUserPaper user={user}/> : ""}
+      {
+        tokens !== undefined ?
+          <CustomButton text="Update Password"
+            onClick={handleRefreshUpdatePasswordClick} />
+          : ""
+      }
+      {
+        openUpdateUser === true ?
+          <UpdateUserPaper user={user} /> : ""
+      }
+      {
+        openUpdatePassword === true ?
+          <UpdatePasswordPaper user={user} /> : ""
+      }
     </Grid>
   </div>;
 }

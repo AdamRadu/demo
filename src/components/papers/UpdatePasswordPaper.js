@@ -3,11 +3,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import Alert from '@material-ui/lab/Alert';
 import CustomTextField from '../TextField';
 import CustomButton from '../Button';
 import CustomizedSnackbar from '../Snackbar';
 import * as controller from '../../user/contorller'
-
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,9 +49,10 @@ const useStyles = makeStyles((theme) => ({
 
 const HTTP_STATUS_SUCCESS = 200
 
-export default function UpdateUserPaper(props) {
+export default function UpdatePasswordPaper(props) {
     const classes = useStyles();
     const [user, setUser] = useState(props.user)
+    const [password, setPassword] = useState()
     const [snackbarText, setSnackbarText] = useState()
     const [snackbarType, setSnackbarType] = useState()
     const [open, setOpen] = useState(false)
@@ -59,28 +60,30 @@ export default function UpdateUserPaper(props) {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        if (user.username && user.email) {
-            var response = await controller.updateUser(user)
-            const code = response.code
-            if (code === HTTP_STATUS_SUCCESS) {
-                setOpen(true)
-                setSnackbarType("success")
-                setSnackbarText("Updated user information successfully!")
-            } else {
-                setOpen(true)
-                setSnackbarType("error")
-                setSnackbarText("Wrong username or password!")
+        if (user.id && password.old) {
+            if (password.new === password.confirmation) {
+                var response = await controller.updatePassword({id: user.id, password: password})
+                const code = response.code
+                if (code === HTTP_STATUS_SUCCESS) {
+                    setOpen(true)
+                    setSnackbarType("success")
+                    setSnackbarText("Password was updated with success!")
+                } else {
+                    setOpen(true)
+                    setSnackbarType("error")
+                    setSnackbarText("Wrong password!")
+                }
             }
         }
         else {
-            if (user.username === undefined) {
+            if (password.old === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
-                setSnackbarText("Plaease provide a username!")
+                setSnackbarText("Plaease provide your old password!")
             } else if (user.email === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
-                setSnackbarText("Plaease provide an email!")
+                setSnackbarText("Plaease provide a new password!")
             }
         }
     }
@@ -89,13 +92,18 @@ export default function UpdateUserPaper(props) {
         setOpen(false)
     }
 
-    const handleEmailChange = (value) => {
-        setUser({ ...user, ...{ email: value } })
+    const handleOldPasswordChange = (value) => {
+        setPassword({ ...password, ...{ old: value } })
     }
 
-    const handleUsernameChange = (value) => {
-        setUser({ ...user, ...{ username: value } })
+    const handleNewPasswordChange = (value) => {
+        setPassword({ ...password, ...{ new: value } })
     }
+
+    const handleNewPasswordConfirmationChange = (value) => {
+        setPassword({ ...password, ...{ confirmation: value } })
+    }
+
 
     return (
         <div className={classes.root}>
@@ -112,10 +120,16 @@ export default function UpdateUserPaper(props) {
                         </Typography>
                     </Grid>
                     <form className={classes.form} noValidate autoComplete="off" onSubmit={handleSubmit}>
-                        <CustomTextField placeholder="Username"
-                            saveValue={handleUsernameChange} />
-                        <CustomTextField placeholder="Email"
-                            saveValue={handleEmailChange} />
+                        <CustomTextField type="password"
+                            placeholder="Old password"
+                            saveValue={handleOldPasswordChange} />
+                        <CustomTextField type="password"
+                            placeholder="New Password"
+                            saveValue={handleNewPasswordChange} />
+                        <CustomTextField type="password"
+                            placeholder="Confirm New Password"
+                            saveValue={handleNewPasswordConfirmationChange} />
+                        {password !== undefined ? password.new !== password.confirmation ? <Alert severity="error" className={classes.text}>Passwords do not match!</Alert> : "":""}
                         <CustomButton type="submit" text={"Submit"} />
                     </form>
                 </Grid>

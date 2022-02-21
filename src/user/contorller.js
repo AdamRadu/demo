@@ -48,6 +48,20 @@ export const updateUser = async (data) =>{
     return resultWithCode
 }
 
+export const updatePassword = async (data) =>{
+
+    const body = JSON.stringify({old_password: data.password.old,  new_password: data.password.new, confirm_password: data.password.confirmation})
+
+    const result = await api.patchUpdatePassword({id: data.id, body: body})
+
+    const resultWithCode = {
+        data: result.data,
+        code: result.status
+    }
+
+    return resultWithCode
+}
+
 export const refreshTokens = async (data) =>{
 
     const token = JSON.stringify({refresh_token: data})
