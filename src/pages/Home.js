@@ -2,14 +2,18 @@ import CustomAppBar from "../components/AppBar"
 import { useHistory } from "react-router-dom";
 import CustomButton from "../components/Button";
 import { refreshTokens } from "../user/contorller";
+import jwt from 'jwt-decode'
 
 export default function Home() {
   const history = useHistory()
   const location = history.location.pathname
   var user, tokens
+  
   if (history.location.state) {
-    user = history.location.state.response.user
-    tokens = history.location.state.response.tokens
+    tokens = history.location.state.tokens
+
+    const tokenToString = jwt(tokens.access_token); 
+    user = {id: tokenToString.user_id}
   }
 
   const handleRefreshClick = async () => {
@@ -17,7 +21,6 @@ export default function Home() {
     await refreshTokens(tokens.refresh_token)
   }
 
-  console.log(tokens)
   return <div>
     <CustomAppBar location={location}
       user={user} />

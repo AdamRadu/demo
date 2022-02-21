@@ -34,8 +34,6 @@ export default function CustomAppBar(props) {
     const location = props.location
     const user = props.user
 
-
-
     const handleBackClick = () => {
         history.goBack()
     }
@@ -46,7 +44,7 @@ export default function CustomAppBar(props) {
                 return false
             }
         }
-        if (location !== "/") {
+        if (location !== "/home") {
             return false
         }
         return true

@@ -48,11 +48,12 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const HTTP_STATUS_SUCCESS = 200
+const HTTP_STATUS_CCREATED_SUCCESS = 201
 
 export default function SignupPaper() {
+    const history = useHistory()
     const classes = useStyles();
-    const [email, setEmail] = useState()
+    const [username, setusername] = useState()
     const [password, setPassword] = useState()
     const [confirmationPassword, setConfirmationPassword] = useState()
     const [snackbarText, setSnackbarText] = useState()
@@ -62,25 +63,33 @@ export default function SignupPaper() {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        if (email && password) {
+        if (username && password) {
             if(password === confirmationPassword){
-                var response = await controller.postLogin({email: email, password: password})
+                var response = await controller.signupUser({username: username, password: password, confirmationPassword: confirmationPassword})
                 const code = response.code
-                if (code === HTTP_STATUS_SUCCESS) {
+                if (code === HTTP_STATUS_CCREATED_SUCCESS) {
                     setOpen(true)
                     setSnackbarType("success")
-                    setSnackbarText("Succesfully registered!")
+                    setSnackbarText("Succesfully signed up!")
+                    setTimeout(function () {
+                        history.push({
+                            pathname:  "/login",
+                            state: {
+                                backLocation: "/signup"
+                            } 
+                         });
+                    }, 5000);
                 } else {
                     setOpen(true)
                     setSnackbarType("error")
-                    setSnackbarText("Wrong email or password!")
+                    setSnackbarText("Wrong username or password!")
                 }
             }
         } else {
-            if (email === undefined) {
+            if (username === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
-                setSnackbarText("Plaease provide an email!")
+                setSnackbarText("Plaease provide a username!")
             } else if (password === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
@@ -101,8 +110,8 @@ export default function SignupPaper() {
         setConfirmationPassword(value)
     }
 
-    const handleEmailChange = (value) => {
-        setEmail(value)
+    const handleUsernameChange = (value) => {
+        setusername(value)
     }
 
     return (
@@ -121,7 +130,7 @@ export default function SignupPaper() {
                     </Grid>
                     <form className={classes.form} noValidate autoComplete="off" onSubmit={handleSubmit}>
                         <CustomTextField placeholder="Email"
-                            saveValue={handleEmailChange} />
+                            saveValue={handleUsernameChange} />
                         <CustomTextField type="password"
                             placeholder="Password"
                             saveValue={handlePasswordChange} />
