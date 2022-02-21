@@ -1,35 +1,59 @@
+import React, { useState } from 'react';
 import CustomAppBar from "../components/AppBar"
 import { useHistory } from "react-router-dom";
 import CustomButton from "../components/Button";
-import { refreshTokens } from "../user/contorller";
+import UpdateUserPaper from '../components/papers/UpdateUserPaper';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import jwt from 'jwt-decode'
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+      display: 'flex',
+      flexWrap: 'wrap',
+  },
+  paper: {
+      borderRadius: "5px",
+      width: "100%",
+  },
+}));
 
 export default function Home() {
   const history = useHistory()
+  const classes = useStyles()
   const location = history.location.pathname
+  const [openUpdateUser, setOpenUpdateUser] = useState(false)
   var user, tokens
-  
+
   if (history.location.state) {
     tokens = history.location.state.tokens
 
-    const tokenToString = jwt(tokens.access_token); 
-    user = {id: tokenToString.user_id}
+    const tokenToString = jwt(tokens.access_token);
+    user = { id: tokenToString.user_id }
+  }else{
+    tokens = undefined
+    user = undefined
   }
 
   const handleRefreshClick = async () => {
-    console.log(tokens)
-    await refreshTokens(tokens.refresh_token)
+    setOpenUpdateUser(!openUpdateUser)
   }
 
   return <div>
     <CustomAppBar location={location}
       user={user} />
-    <h2>Home</h2>
-    {
-      tokens !==undefined?
-    <CustomButton text = "RefreshTokens"
-      onClick = {handleRefreshClick}/>
-      :""
-    }
+    <Grid container
+      className={classes.paper}
+      direction="column"
+      justifyContent='center'
+      alignItems='center'>
+      {
+        tokens !== undefined ?
+          <CustomButton text="Update User"
+            onClick={handleRefreshClick} />
+          : ""
+      }
+      {openUpdateUser === true ? <UpdateUserPaper user={user}/> : ""}
+    </Grid>
   </div>;
 }

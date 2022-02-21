@@ -63,7 +63,7 @@ export default function LoginPaper() {
         if (email && password) {
             var response = await controller.postLogin({email: email, password: password})
             const code = response.code
-            console.log(response)
+            
             if (code === HTTP_STATUS_SUCCESs) {
                 setOpen(true)
                 setSnackbarType("success")

@@ -34,6 +34,20 @@ export const signupUser = async (data) =>{
     return resultWithCode
 }
 
+export const updateUser = async (data) =>{
+
+    const body = JSON.stringify({username: data.username, email_address: data.email})
+
+    const result = await api.patchUpdateUser({id: data.id, body: body})
+
+    const resultWithCode = {
+        data: result.data,
+        code: result.status
+    }
+
+    return resultWithCode
+}
+
 export const refreshTokens = async (data) =>{
 
     const token = JSON.stringify({refresh_token: data})
@@ -44,8 +58,6 @@ export const refreshTokens = async (data) =>{
         data: result.data,
         code: result.status
     }
-
-    console.log(resultWithCode)
 
     return resultWithCode
 }

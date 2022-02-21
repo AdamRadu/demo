@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Alert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography';
 import CustomTextField from '../TextField';
 import CustomButton from '../Button';
 import CustomizedSnackbar from '../Snackbar';
 import * as controller from '../../user/contorller'
-import { useHistory } from 'react-router-dom';
 // all the css for the signup page
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,12 +46,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const HTTP_STATUS_CCREATED_SUCCESS = 201
+const HTTP_STATUS_SUCCESS = 200
 
-export default function UpdatePaper() {
-    const history = useHistory()
+export default function UpdateUserPaper(props) {
     const classes = useStyles();
-    const [user, setUser] = useState()
+    const [user, setUser] = useState(props.user)
     const [snackbarText, setSnackbarText] = useState()
     const [snackbarType, setSnackbarType] = useState()
     const [open, setOpen] = useState(false)
@@ -61,34 +58,23 @@ export default function UpdatePaper() {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        if (username && password) {
-            if(password === confirmationPassword){
-                var response = await controller.signupUser({username: username, password: password, confirmationPassword: confirmationPassword})
-                const code = response.code
-                if (code === HTTP_STATUS_CCREATED_SUCCESS) {
-                    setOpen(true)
-                    setSnackbarType("success")
-                    setSnackbarText("Succesfully signed up!")
-                    setTimeout(function () {
-                        history.push({
-                            pathname:  "/login",
-                            state: {
-                                backLocation: "/signup"
-                            } 
-                         });
-                    }, 5000);
-                } else {
-                    setOpen(true)
-                    setSnackbarType("error")
-                    setSnackbarText("Wrong username or password!")
-                }
-            }
-        } else {
-            if (username === undefined) {
+        if (user.username && user.email) {
+            var response = await controller.updateUser(user)
+            const code = response.code
+            if (code === HTTP_STATUS_SUCCESS) {
+                setOpen(true)
+                setSnackbarType("success")
+                setSnackbarText("Updated user information successfully!")
+            } else {
+                setOpen(true)
+                setSnackbarType("error")
+                setSnackbarText("Wrong username or password!")
+            }        
+            if (user.username === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
                 setSnackbarText("Plaease provide a username!")
-            } else if (password === undefined) {
+            } else if (user.email === undefined) {
                 setOpen(true)
                 setSnackbarType("error")
                 setSnackbarText("Plaease provide a password!")
@@ -101,11 +87,11 @@ export default function UpdatePaper() {
     }
 
     const handleEmailChange = (value) => {
-        setConfirmationPassword(value)
+        setUser({ ...user, ...{email: value}})
     }
 
     const handleUsernameChange = (value) => {
-        setusername(value)
+        setUser({ ...user, ...{username: value}})
     }
 
     return (
@@ -123,11 +109,11 @@ export default function UpdatePaper() {
                         </Typography>
                     </Grid>
                     <form className={classes.form} noValidate autoComplete="off" onSubmit={handleSubmit}>
-                        <CustomTextField placeholder="Email"
+                        <CustomTextField placeholder="Username"
                             saveValue={handleUsernameChange} />
                         <CustomTextField placeholder="Email"
                             saveValue={handleEmailChange} />
-                        <CustomButton type="submit" text={"Register"} />
+                        <CustomButton type="submit" text={"Submit"} />
                     </form>
                 </Grid>
             </Paper>

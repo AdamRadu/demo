@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router";
 
@@ -50,6 +51,13 @@ export default function CustomAppBar(props) {
         return true
     }
 
+    const displayLogout = (location) => {
+        if (location !== "/home") {
+            return false
+        }
+        return true
+    }
+
     return (
         <div className={classes.root}>
             <AppBar position="static" className={classes.bar}>
@@ -64,6 +72,12 @@ export default function CustomAppBar(props) {
                         displayLogin(user, location) ?
                             <IconButton component={Link} to="/login" edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                                 <AccountCircleIcon />
+                            </IconButton> : ""
+                    }
+                    {
+                        displayLogout(location) ?
+                            <IconButton component={Link} to="/login" edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                                <LogoutRoundedIcon />
                             </IconButton> : ""
                     }
                 </Toolbar>

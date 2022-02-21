@@ -20,8 +20,16 @@ export const postSignupWithUsername = async (data) =>{
     return response
 }
 
+export const patchUpdateUser = async (data) =>{
+
+    const response = await axios.patch(`http://localhost:${port}/users/${data.id}/update`, data.body, {crossDomain: true})
+
+    return response
+}
+
 export const refreshTokens = async (data) =>{
     const response = await axios.post(`http://localhost:${loginPort}/users/refreshTokens`, data, {crossDomain: true})
 
     return response
 }
+
