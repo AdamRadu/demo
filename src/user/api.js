@@ -35,7 +35,7 @@ export const patchUpdatePassword = async (data) =>{
 }
 
 export const refreshTokens = async (data) =>{
-    const response = await axios.post(`http://localhost:${loginPort}/users/refreshTokens`, data, {crossDomain: true})
+    const response = await axios.post(`http://localhost:${loginPort}/users/refresh-tokens`, data, {crossDomain: true})
 
     return response
 }
