@@ -45,3 +45,9 @@ export const getUsers = async () =>{
 
     return response
 }
+
+export const googleLogin = async () =>{
+    const response = await axios.get(`http://localhost:${port}/users/google-login`)
+
+    return response
+}
