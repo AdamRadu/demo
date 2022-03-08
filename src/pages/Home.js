@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import CustomButton from "../components/Button";
 import UpdateUserPaper from '../components/papers/UpdateUserPaper'
 import UpdatePasswordPaper from '../components/papers/UpdatePasswordPaper';
+import { useCookies } from "react-cookie"
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import jwt from 'jwt-decode'
@@ -20,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Home() {
+  const [cookies, setCookie] = useCookies();
   const history = useHistory()
   const classes = useStyles()
   const location = history.location.pathname
@@ -31,8 +33,15 @@ export default function Home() {
     tokens = history.location.state.tokens
 
     const tokenToString = jwt(tokens.access_token);
+    
     user = { id: tokenToString.user_id }
-  } else {
+  } else if(cookies.access_token){
+    tokens = tokens === undefined ? {access_token: cookies.access_token , refresh_token: cookies.refresh_token}:undefined
+    
+    const tokenToString = jwt(tokens.access_token)
+    
+    user = { id: tokenToString.user_id }
+  }else {
     tokens = undefined
     user = undefined
   }

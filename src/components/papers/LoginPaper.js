@@ -8,6 +8,7 @@ import CustomButton from '../Button';
 import CustomizedSnackbar from '../Snackbar';
 import * as controller from '../../user/contorller'
 import { useHistory } from 'react-router-dom';
+import CustomModal from '../CustomModal';
 
 // all the css for the login page
 const useStyles = makeStyles((theme) => ({
@@ -17,8 +18,8 @@ const useStyles = makeStyles((theme) => ({
     },
     paper: {
         borderRadius: "5px",
-        width: "300px",
-        height: "400px"
+        width: "400px",
+        height: "550"
     },
     title: {
         marginTop: "10px"
@@ -61,20 +62,20 @@ export default function LoginPaper() {
         event.preventDefault()
 
         if (email && password) {
-            var response = await controller.postLogin({email: email, password: password})
+            var response = await controller.postLogin({ email: email, password: password })
             const code = response.code
-            
+
             if (code === HTTP_STATUS_SUCCESs) {
                 setOpen(true)
                 setSnackbarType("success")
                 setSnackbarText("Succesfully logged in!")
                 setTimeout(function () {
                     history.push({
-                        pathname:  "/home",
+                        pathname: "/home",
                         state: {
                             tokens: response.data
-                        } 
-                     });
+                        }
+                    });
                 }, 5000);
             } else {
                 setOpen(true)
@@ -127,6 +128,7 @@ export default function LoginPaper() {
                             placeholder="Password"
                             saveValue={handlePasswordChange} />
                         <CustomButton type="submit" text={"Login"} />
+                        <CustomModal />
                     </form>
                 </Grid>
             </Paper>

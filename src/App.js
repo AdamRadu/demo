@@ -4,6 +4,7 @@ import {
   Route,
 } from "react-router-dom";
 import List from "./pages/UsersList"
+import { CookiesProvider } from "react-cookie";
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import Home from "./pages/Home"
@@ -19,9 +20,11 @@ function App() {
           </Route>
           <Route path="/signup">
             <Signup />
-          </Route>        
+          </Route>      
           <Route path="/home">
+            <CookiesProvider>
             <Home />
+            </CookiesProvider>
           </Route>
           <Route path="/list">
             <List />
