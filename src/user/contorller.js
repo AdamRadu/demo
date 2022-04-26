@@ -17,12 +17,11 @@ export const postLogin = async (data) => {
     }
 }
 
-export const postGoogleLogin = async () => {
+export const getGoogleLogin = async () => {
 
     const result = await api.googleLogin()
 
-    console.log(result.request.responseURL)
-    return result.request.responseURL
+    return result
 }
 
 
@@ -88,6 +87,18 @@ export const refreshTokens = async (data) => {
 export const getUsers = async () => {
 
     const result = await api.getUsers()
+
+    const resultWithCode = {
+        data: result.data,
+        code: result.status
+    }
+
+    return resultWithCode
+}
+
+export const linkLogin = async () => {
+
+    const result = await api.linkLogin()
 
     const resultWithCode = {
         data: result.data,

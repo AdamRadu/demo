@@ -47,7 +47,19 @@ export const getUsers = async () =>{
 }
 
 export const googleLogin = async () =>{
-    const response = await axios.get(`http://localhost:${port}/users/google-login`)
+    // const response = await axios.get(`http://localhost:${port}/users/google-login`)
+    const response = await fetch(`http://localhost:${port}/users/google-login`)
+
+    return response
+}
+
+export const linkLogin = async () =>{
+    const email = JSON.stringify({ email: "radu.adam@kape.com" })
+
+    // const response = await axios.get(`http://localhost:${port}/users/login-magic-link`)
+    const response = await axios.post(`http://localhost:${port}/users/login-magic-link`, email, {crossDomain: true})
+
+    console.log(response)
 
     return response
 }

@@ -107,6 +107,15 @@ export default function LoginPaper() {
         setEmail(value)
     }
 
+    const requestLink = async (event) => {
+        event.preventDefault()
+        console.log("i was clicked")
+
+        const res = await controller.linkLogin()
+
+        console.log(res)
+    }
+
     return (
         <div className={classes.root}>
             <Paper elevation={3}
@@ -130,6 +139,8 @@ export default function LoginPaper() {
                         <CustomButton type="submit" text={"Login"} />
                         <CustomModal />
                     </form>
+                    <CustomButton onClick={requestLink}
+                    text={"Request link"} />
                 </Grid>
             </Paper>
             {open === true ? <CustomizedSnackbar open={open}

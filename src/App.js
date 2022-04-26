@@ -7,6 +7,7 @@ import List from "./pages/UsersList"
 import { CookiesProvider } from "react-cookie";
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
+import MagicLink from "./pages/MagicLink";
 import Home from "./pages/Home"
 import './App.css';
 
@@ -28,6 +29,9 @@ function App() {
           </Route>
           <Route path="/list">
             <List />
+          </Route>
+          <Route>
+            <MagicLink/>
           </Route>
         </Switch>
       </div>

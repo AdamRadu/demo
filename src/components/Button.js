@@ -19,6 +19,8 @@ const useStyles = makeStyles((theme) => ({
 export default function CustomButton(props) {
     const classes = useStyles();
 
+    console.log(props.onClick)
+
     return (
         <div className={classes.root}>
             <Button onClick={props.onClick}
