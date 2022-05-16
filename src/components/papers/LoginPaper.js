@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import CustomTextField from '../TextField';
 import CustomButton from '../Button';
-import CustomizedSnackbar from '../Snackbar';
-import * as controller from '../../user/contorller'
-import { useHistory } from 'react-router-dom';
-import CustomModal from '../CustomModal';
-
+import { useOktaAuth } from '@okta/okta-react';
 // all the css for the login page
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -50,71 +44,14 @@ const useStyles = makeStyles((theme) => ({
 const HTTP_STATUS_SUCCESs = 200
 
 export default function LoginPaper() {
-    const history = useHistory()
+    const { authState, oktaAuth } = useOktaAuth();
     const classes = useStyles();
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-    const [snackbarText, setSnackbarText] = useState()
-    const [snackbarType, setSnackbarType] = useState()
-    const [open, setOpen] = useState(false)
 
-    const handleSubmit = async (event) => {
-        event.preventDefault()
+    const loginWithOkta = async () => oktaAuth.signInWithRedirect({originalUri: "/home"})
+    const logout = async () => oktaAuth.signOut()
 
-        if (email && password) {
-            var response = await controller.postLogin({ email: email, password: password })
-            const code = response.code
-
-            if (code === HTTP_STATUS_SUCCESs) {
-                setOpen(true)
-                setSnackbarType("success")
-                setSnackbarText("Succesfully logged in!")
-                setTimeout(function () {
-                    history.push({
-                        pathname: "/home",
-                        state: {
-                            tokens: response.data
-                        }
-                    });
-                }, 5000);
-            } else {
-                setOpen(true)
-                setSnackbarType("error")
-                setSnackbarText("Wrong email or password!")
-            }
-        } else {
-            if (email === undefined) {
-                setOpen(true)
-                setSnackbarType("error")
-                setSnackbarText("Plaease provide a email!")
-            } else if (password === undefined) {
-                setOpen(true)
-                setSnackbarType("error")
-                setSnackbarText("Plaease provide a password!")
-            }
-        }
-    }
-
-    const closeSnackbar = () => {
-        setOpen(false)
-    }
-
-    const handlePasswordChange = (value) => {
-        setPassword(value)
-    }
-
-    const handleEmailChange = (value) => {
-        setEmail(value)
-    }
-
-    const requestLink = async (event) => {
-        event.preventDefault()
-        console.log("i was clicked")
-
-        const res = await controller.linkLogin()
-
-        console.log(res)
-    }
+    const text = authState !== null ? authState.isAuthenticated ? "Logout": "Login" : ""
+    const onClick = authState!== null ? authState.isAuthenticated ? logout : loginWithOkta : function(){}
 
     return (
         <div className={classes.root}>
@@ -127,27 +64,13 @@ export default function LoginPaper() {
                         className={classes.titleBackground}>
                         <Typography className={classes.title}
                             variant="h5" >
-                            Login
+                            {text}
                         </Typography>
                     </Grid>
-                    <form className={classes.form} noValidate autoComplete="off" onSubmit={handleSubmit}>
-                        <CustomTextField placeholder="Email"
-                            saveValue={handleEmailChange} />
-                        <CustomTextField type="password"
-                            placeholder="Password"
-                            saveValue={handlePasswordChange} />
-                        <CustomButton type="submit" text={"Login"} />
-                        <CustomModal />
-                    </form>
-                    <CustomButton onClick={requestLink}
-                    text={"Request link"} />
+                    <CustomButton onClick={onClick}
+                    text={text} />
                 </Grid>
             </Paper>
-            {open === true ? <CustomizedSnackbar open={open}
-                text={snackbarText}
-                severity={snackbarType}
-                closeSnackbar={closeSnackbar} />
-                : ""}
         </div>
     );
 }

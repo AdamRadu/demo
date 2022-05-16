@@ -8,7 +8,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { Link } from 'react-router-dom';
-import { useHistory } from "react-router";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     root: {
